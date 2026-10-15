@@ -9,5 +9,10 @@ def add(a: int, b: int) -> int:
 
 @mcp.tool()
 def greeting(name: str) -> str:
-    """return a simple greeting."""
+    """Return a simple greeting."""
     return f"Hello {name}"
+
+@mcp.tool()
+def get_colors() -> list[str]:
+    """Return a list of colors"""
+    return ["red", "green", "blue"]
