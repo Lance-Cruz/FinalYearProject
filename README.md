@@ -19,10 +19,12 @@ Install dependencies:
 
     pip install -r requirements.txt
 
-Run the MCP server:
+Run the MCP environment:
 
-For the current development stage: the server can be tested using the MCP inspector:
+    python client/client.py
+
+This runs client and connect to the MCP server using stdio, then interact with the tools exposed by server.
+
+For manual development and testing, the MCP can still be used if needed:
 
     npx @modelcontextprotocol/inspector uv run --with "mcp[cli]" mcp run server/server.py
-
-Note: This is a temporary development/testing approach. The MCP Inspector is currently being used as a client to interact with and test the server. A dedicated MCP client will be added later in the project, at which point the normal workflow will use that client instead of the Inspector.
