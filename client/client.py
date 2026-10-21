@@ -18,8 +18,12 @@ async def main():
             print(f"- {tool.name}")
 
         add_tool = await client.call_tool("add", {"a": 5, "b": 15})
+        greeting_tool = await client.call_tool("greeting", {"name": "Lance"})
+        get_colors_tool = await client.call_tool("get_colors", {})
 
         print(add_tool.structured_content)
+        print(greeting_tool.structured_content)
+        print(get_colors_tool.structured_content)
 
 if __name__ == "__main__":
     anyio.run(main)
