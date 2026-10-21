@@ -17,5 +17,9 @@ async def main():
         for tool in tools.tools:
             print(f"- {tool.name}")
 
+        add_tool = await client.call_tool("add", {"a": 5, "b": 15})
+
+        print(add_tool.structured_content)
+
 if __name__ == "__main__":
     anyio.run(main)
