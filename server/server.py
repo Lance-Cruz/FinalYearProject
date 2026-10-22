@@ -16,3 +16,6 @@ def greeting(name: str) -> str:
 def get_colors() -> list[str]:
     """Return a list of colors"""
     return ["red", "green", "blue"]
+
+if __name__ == "__main__":
+    mcp.run()
