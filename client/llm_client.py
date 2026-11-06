@@ -7,7 +7,7 @@ client = OpenAI(
     api_key=os.environ.get(""), # Excluded from commit
 )
 
-response = client.respones.create(
+response = client.responses.create(
     model="gpt-5.5",
     instructions="You are an assistant, that gives clear and simple explanation",
     input="Hello, what is MCP?",
