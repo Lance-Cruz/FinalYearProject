@@ -2,10 +2,11 @@
 
 import os
 from openai import OpenAI
+from dotenv import load_dotenv
 
-client = OpenAI(
-    api_key=os.environ.get(""), # Excluded from commit
-)
+load_dotenv()
+
+client = OpenAI()
 
 response = client.responses.create(
     model="gpt-5.5",
