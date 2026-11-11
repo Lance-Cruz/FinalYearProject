@@ -34,31 +34,55 @@ async def main():
                 "strict": False
             })
 
+        input_message = [
+            {
+                "role": "user",
+                "content": "What is 21 + 21?"
+            }
+        ] 
 
-        response = await llm.responses.create(
-            model="gpt-6-luna",
-            instructions=(
-                "You are an assistant, that give clear and simple explanation. "
-                "Use the available MCP tools when appropriate."
-            ),
-            input="What is 5 plus 15?",
-            tools=llm_tools
-        )
+        for _ in range(5):
+            response = await llm.responses.create(
+                model="gpt-6-luna",
+                instructions=(
+                    "You are an assistant, that give clear and simple explanation. "
+                    "Use the available MCP tools when appropriate."
+                ),
+                input=input_message,
+                tools=llm_tools
+            )
 
-        for call in response.output:
-            if call.type == "function_call":
+            input_message.extend(response.output)
 
-                arguments = json.loads(call.arguments)
+            tool_called = False
 
-                print(f"Calling tool: {call.name}")
-                print(f"Arguments: {arguments}")
+            for call in response.output:
+                if call.type == "function_call":
+                    tool_called = True
 
-                result = await client.call_tool(
-                    call.name,
-                    arguments
-                )
+                    arguments = json.loads(call.arguments)
 
-                print("Tool result:", result.structured_content)
+                    print(f"Calling tool: {call.name}")
+                    print(f"Arguments: {arguments}")
+
+                    result = await client.call_tool(
+                        call.name,
+                        arguments
+                    )
+
+                    print("Tool result:", result.structured_content)
+
+                    input_message.append(
+                        {
+                            "type": "function_call_output",
+                            "call_id": call.call_id,
+                            "output": json.dumps(result.structured_content),
+                        }
+                    )
+
+            if not tool_called:
+                print("\nLLM:", response.output_text)
+                break
 
 if __name__ == "__main__":
     anyio.run(main)
