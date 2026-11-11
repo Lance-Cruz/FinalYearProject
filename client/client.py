@@ -1,6 +1,12 @@
 import anyio
 
 from mcp import Client, StdioServerParameters
+from openai import AsyncOpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
+
+llm = AsyncOpenAI()
 
 
 async def main():
@@ -24,6 +30,14 @@ async def main():
         print(add_tool.structured_content)
         print(greeting_tool.structured_content)
         print(get_colors_tool.structured_content)
+
+        response = await llm.responses.create(
+            model="gpt-6-luna",
+            instructions="You are an assistant, that gives clear and simple explanation",
+            input="Hello, what is MCP? (Model Context Protocol)",
+        )
+
+        print(response.output_text)
 
 if __name__ == "__main__":
     anyio.run(main)
