@@ -6,3 +6,4 @@ venv/
 .coverage
 htmlcov/
 .vscode/
+.env
