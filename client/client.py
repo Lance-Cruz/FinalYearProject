@@ -1,4 +1,5 @@
 import anyio
+import json
 
 from mcp import Client, StdioServerParameters
 from openai import AsyncOpenAI
@@ -33,13 +34,6 @@ async def main():
                 "strict": False
             })
 
-        add_tool = await client.call_tool("add", {"a": 5, "b": 15})
-        greeting_tool = await client.call_tool("greeting", {"name": "Lance"})
-        get_colors_tool = await client.call_tool("get_colors", {})
-
-        print(add_tool.structured_content)
-        print(greeting_tool.structured_content)
-        print(get_colors_tool.structured_content)
 
         response = await llm.responses.create(
             model="gpt-6-luna",
@@ -51,7 +45,20 @@ async def main():
             tools=llm_tools
         )
 
-        print("\nLLM response: ", response.output)
+        for call in response.output:
+            if call.type == "function_call":
+
+                arguments = json.loads(call.arguments)
+
+                print(f"Calling tool: {call.name}")
+                print(f"Arguments: {arguments}")
+
+                result = await client.call_tool(
+                    call.name,
+                    arguments
+                )
+
+                print("Tool result:", result.structured_content)
 
 if __name__ == "__main__":
     anyio.run(main)
