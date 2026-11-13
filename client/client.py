@@ -34,55 +34,63 @@ async def main():
                 "strict": False
             })
 
-        input_message = [
-            {
-                "role": "user",
-                "content": "What is 21 + 21?"
-            }
-        ] 
+        test_case = [
+            ("FYPLC-54", "What is 21+21?"),
+            ("FYPLC-55", "Can you greet a person called Alex?")
+        ]
 
-        for _ in range(5):
-            response = await llm.responses.create(
-                model="gpt-6-luna",
-                instructions=(
-                    "You are an assistant, that give clear and simple explanation. "
-                    "Use the available MCP tools when appropriate."
-                ),
-                input=input_message,
-                tools=llm_tools
-            )
+        for test_no, prompt in test_case:
+            print(f"\n --- {test_no} ---")
 
-            input_message.extend(response.output)
+            input_message = [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ] 
 
-            tool_called = False
+            for _ in range(5):
+                response = await llm.responses.create(
+                    model="gpt-6-luna",
+                    instructions=(
+                        "You are an assistant, that give clear and simple explanation. "
+                        "Use the available MCP tools when appropriate."
+                    ),
+                    input=input_message,
+                    tools=llm_tools
+                )
 
-            for call in response.output:
-                if call.type == "function_call":
-                    tool_called = True
+                input_message.extend(response.output)
 
-                    arguments = json.loads(call.arguments)
+                tool_called = False
 
-                    print(f"Calling tool: {call.name}")
-                    print(f"Arguments: {arguments}")
+                for call in response.output:
+                    if call.type == "function_call":
+                        tool_called = True
 
-                    result = await client.call_tool(
-                        call.name,
-                        arguments
-                    )
+                        arguments = json.loads(call.arguments)
 
-                    print("Tool result:", result.structured_content)
+                        print(f"Calling tool: {call.name}")
+                        print(f"Arguments: {arguments}")
 
-                    input_message.append(
-                        {
-                            "type": "function_call_output",
-                            "call_id": call.call_id,
-                            "output": json.dumps(result.structured_content),
-                        }
-                    )
+                        result = await client.call_tool(
+                            call.name,
+                            arguments
+                        )
 
-            if not tool_called:
-                print("\nLLM:", response.output_text)
-                break
+                        print("Tool result:", result.structured_content)
+
+                        input_message.append(
+                            {
+                                "type": "function_call_output",
+                                "call_id": call.call_id,
+                                "output": json.dumps(result.structured_content),
+                            }
+                        )
+
+                if not tool_called:
+                    print("\nLLM:", response.output_text)
+                    break
 
 if __name__ == "__main__":
     anyio.run(main)
