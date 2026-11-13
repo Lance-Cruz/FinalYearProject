@@ -36,7 +36,9 @@ async def main():
 
         test_case = [
             ("FYPLC-54", "What is 21+21?"),
-            ("FYPLC-55", "Can you greet a person called Alex?")
+            ("FYPLC-55", "Can you greet a person called Alex?"),
+            ("FYPLC-56", "Retrieve a list of colours available"),
+            ("FYPLC-57", "What does MCP (Model Context Protocol) stand for?")
         ]
 
         for test_no, prompt in test_case:
