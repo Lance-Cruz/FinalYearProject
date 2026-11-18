@@ -34,22 +34,23 @@ async def main():
                 "strict": False
             })
 
-        test_case = [
-            ("FYPLC-54", "What is 21+21?"),
-            ("FYPLC-55", "Can you greet a person called Alex?"),
-            ("FYPLC-56", "Retrieve a list of colours available"),
-            ("FYPLC-57", "What does MCP (Model Context Protocol) stand for?")
-        ]
+        input_message = []
 
-        for test_no, prompt in test_case:
-            print(f"\n --- {test_no} ---")
+        print("\nChat started. Type 'exit' to quit.")
 
-            input_message = [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ] 
+        while True:
+            user_input = input("\nUser: ").strip()
+
+            if user_input.lower() == "exit":
+                break
+
+            if not user_input:
+                continue
+
+            input_message.append({
+                "role": "user",
+                "content": user_input
+            })
 
             for _ in range(5):
                 response = await llm.responses.create(
@@ -66,33 +67,31 @@ async def main():
 
                 tool_called = False
 
-                for call in response.output:
-                    if call.type == "function_call":
+                for item in response.output:
+                    if item.type == "function_call":
                         tool_called = True
 
-                        arguments = json.loads(call.arguments)
-
-                        print(f"Calling tool: {call.name}")
-                        print(f"Arguments: {arguments}")
+                        arguments = json.loads(item.arguments)
 
                         result = await client.call_tool(
-                            call.name,
+                            item.name,
                             arguments
                         )
 
-                        print("Tool result:", result.structured_content)
-
-                        input_message.append(
-                            {
-                                "type": "function_call_output",
-                                "call_id": call.call_id,
-                                "output": json.dumps(result.structured_content),
-                            }
-                        )
+                        input_message.append({
+                            "type": "function_call_output",
+                            "call_id": item.call_id,
+                            "output": result.model_dump_json()
+                        })
 
                 if not tool_called:
-                    print("\nLLM:", response.output_text)
+                    print(f"\LLM: {response.output_text}")
                     break
+
+            else:
+                print("\nTool call limit reached.")
+
+        print("Chat ended.")
 
 if __name__ == "__main__":
     anyio.run(main)
