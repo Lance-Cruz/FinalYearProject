@@ -1,1 +1,4 @@
 mcp[cli]
+anyio
+openai
+python-dotenv
