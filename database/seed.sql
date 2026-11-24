@@ -1,0 +1,1 @@
+-- Insert samples records.
