@@ -1,0 +1,1 @@
+-- A setup file to create the database in PostgreSQL

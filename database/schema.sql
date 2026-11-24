@@ -1,0 +1,1 @@
+-- A schema to create tables, relationships, and constraints
