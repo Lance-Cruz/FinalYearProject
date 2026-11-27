@@ -49,5 +49,14 @@ def get_private_documents() -> list[dict]:
     """Retrieve all private documents from the database."""
     return queries.fetch_private_documents()
 
+@mcp.tool()
+def create_private_document(
+    owner_id: str, title: str, content: str
+) -> dict:
+    """Create a private document in the database."""
+    return queries.create_private_document(
+        owner_id, title, content
+    )
+
 if __name__ == "__main__":
     mcp.run()

@@ -58,3 +58,18 @@ def fetch_private_documents() -> list[dict]:
                 "SELECT * FROM private_documents ORDER by id",
             )
             return cursor.fetchall()
+
+def create_private_document(
+    owner_id: str, title: str, content: str
+) -> dict:
+    with get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cursor:
+            cursor.execute(
+                """
+                INSERT INTO private_documents (owner_id, title, content)
+                VALUES (%s, %s, %s)
+                RETURNING *
+                """,
+                (owner_id, title, content)
+            )
+            return cursor.fetchone()
