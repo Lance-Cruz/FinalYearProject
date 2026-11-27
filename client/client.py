@@ -13,7 +13,7 @@ llm = AsyncOpenAI()
 async def main():
     server = StdioServerParameters(
         command="python",
-        args=["server/server.py"]
+        args=["-m", "server.server"]
     )
 
     async with Client(server) as client:
@@ -85,7 +85,7 @@ async def main():
                         })
 
                 if not tool_called:
-                    print(f"\LLM: {response.output_text}")
+                    print(f"\nLLM: {response.output_text}")
                     break
 
             else:
