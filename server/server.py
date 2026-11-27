@@ -67,5 +67,14 @@ def update_private_document(
         document_id, owner_id, title, content
     )
 
+@mcp.tool()
+def delete_private_document(
+    document_id: int, owner_id: str
+) -> bool:
+    """Delete a private document by document ID and owner ID."""
+    return queries.delete_private_document(
+        document_id, owner_id
+    )
+
 if __name__ == "__main__":
     mcp.run()

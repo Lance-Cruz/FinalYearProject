@@ -89,3 +89,18 @@ def update_private_document(
                 (title, content, document_id, owner_id)
             )
             return cursor.fetchone()
+
+def delete_private_document(
+    document_id: int, owner_id: str
+) -> bool:
+    with get_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                DELETE FROM private_documents
+                WHERE id = %s AND owner_id = %s
+                RETURNING id
+                """,
+                (document_id, owner_id)
+            )
+            return cursor.fetchone() is not None
