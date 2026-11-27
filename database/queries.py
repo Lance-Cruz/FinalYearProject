@@ -37,3 +37,16 @@ def update_public_document(
                 (title, content, document_id)
             )
             return cursor.fetchone()
+
+def delete_public_document(document_id: int) -> bool:
+    with get_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                DELETE FROM public_documents
+                WHERE id = %s
+                RETURNING id
+                """,
+                (document_id,)
+            )
+            return cursor.fetchone() is not None
