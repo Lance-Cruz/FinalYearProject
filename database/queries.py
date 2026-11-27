@@ -21,3 +21,19 @@ def create_public_documents(title: str, content: str) -> dict:
                 (title, content)
             )
             return cursor.fetchone()
+
+def update_public_document(
+    document_id: int, title: str, content: str
+) -> dict | None:
+    with get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cursor:
+            cursor.execute(
+                """
+                UPDATE public_documents
+                SET title = %s, content = %s
+                WHERE id = %s
+                RETURNING *
+                """,
+                (title, content, document_id)
+            )
+            return cursor.fetchone()

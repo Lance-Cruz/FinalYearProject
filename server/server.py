@@ -30,5 +30,14 @@ def create_public_document(title: str, content: str) -> dict:
     """Create a public document in the database."""
     return queries.create_public_documents(title, content)
 
+@mcp.tool()
+def update_public_document(
+    document_id: int, title: str, content: str
+) -> dict | None:
+    """Update the title and content of a public document by ID."""
+    return queries.update_public_document(
+        document_id, title, content
+    )
+
 if __name__ == "__main__":
     mcp.run()
