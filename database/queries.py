@@ -50,3 +50,11 @@ def delete_public_document(document_id: int) -> bool:
                 (document_id,)
             )
             return cursor.fetchone() is not None
+
+def fetch_private_documents() -> list[dict]:
+    with get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cursor:
+            cursor.execute(
+                "SELECT * FROM private_documents ORDER by id",
+            )
+            return cursor.fetchall()

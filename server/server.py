@@ -44,5 +44,10 @@ def delete_public_document(document_id: int) -> bool:
     """Delete a public document by ID; return whether it was deleted."""
     return queries.delete_public_document(document_id)
 
+@mcp.tool()
+def get_private_documents() -> list[dict]:
+    """Retrieve all private documents from the database."""
+    return queries.fetch_private_documents()
+
 if __name__ == "__main__":
     mcp.run()
