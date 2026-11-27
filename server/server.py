@@ -58,5 +58,14 @@ def create_private_document(
         owner_id, title, content
     )
 
+@mcp.tool()
+def update_private_document(
+    document_id: int, owner_id: str, title: str, content: str
+) -> dict | None:
+    """Update a private document by document ID and owner ID."""
+    return queries.update_private_document(
+        document_id, owner_id, title, content
+    )
+
 if __name__ == "__main__":
     mcp.run()

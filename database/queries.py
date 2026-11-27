@@ -73,3 +73,19 @@ def create_private_document(
                 (owner_id, title, content)
             )
             return cursor.fetchone()
+
+def update_private_document(
+    document_id: int, owner_id: str, title: str, content: str
+) -> dict | None:
+    with get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cursor:
+            cursor.execute(
+                """
+                UPDATE private_documents
+                SET title = %s, content = %s
+                WHERE id = %s AND owner_id = %s
+                RETURNING *
+                """,
+                (title, content, document_id, owner_id)
+            )
+            return cursor.fetchone()
