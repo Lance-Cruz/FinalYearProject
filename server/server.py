@@ -1,6 +1,6 @@
 from mcp.server import MCPServer
 
-from database.queries import fetch_public_documents
+from database import queries
 
 mcp = MCPServer("Basic MCP Server")
 
@@ -23,7 +23,12 @@ def get_colors() -> list[str]:
 @mcp.tool()
 def get_public_documents() -> list[dict]:
     """Retrieve all public documents from the database."""
-    return fetch_public_documents()
+    return queries.fetch_public_documents()
+
+@mcp.tool()
+def create_public_document(title: str, content: str) -> dict:
+    """Create a public document in the database."""
+    return queries.create_public_documents(title, content)
 
 if __name__ == "__main__":
     mcp.run()

@@ -8,3 +8,16 @@ def fetch_public_documents() -> list[dict]:
                 "SELECT * FROM public_documents ORDER by id"
             )
             return cursor.fetchall()
+
+def create_public_documents(title: str, content: str) -> dict:
+    with get_connection() as conn:
+        with conn.cursor(row_factory=dict_row) as cursor:
+            cursor.execute(
+                """
+                INSERT INTO public_documents (title, content)
+                VALUES (%s, %s)
+                RETURNING *
+                """,
+                (title, content)
+            )
+            return cursor.fetchone()
